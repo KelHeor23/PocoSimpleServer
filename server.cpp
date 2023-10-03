@@ -2,6 +2,11 @@
 
 #include "server.h"
 
+smplServer::smplServer(std::string &_port)
+{
+    newAddress(std::stoi(_port));
+}
+
 smplServer::smplServer(std::string _adr, std::string _port)
 {
     newAddress(_adr, _port);
@@ -36,32 +41,50 @@ void smplServer::listenClient(Poco::Net::StreamSocket clientSocket)
         while (true) {
 
             Poco::UInt8  size;
+
+            // Call poll() and wait 100 sec for it to complete.
+            if (clientSocket.poll(Poco::Timespan(100000000), Poco::Net::Socket::SELECT_READ) <= 0)
+                break;
+            
             // Receive size of msg
             if (clientSocket.receiveBytes(&size, sizeof(size)) <= 0)
-                break;
+                break;            
 
             char buffer[size+1];
 
             // Receive msg
             if (clientSocket.receiveBytes(buffer, size) <= 0)
-                break;
+                break;            
 
             reverseCharArray(buffer, size);
 
             buffer[size] = '\0'; // adding the end of line character
 
             std::cout << "Received message: " << buffer << std::endl;
-        }
-
-        std::cout << "Client socket close" << std::endl; 
-        clientSocket.close();
+        }        
     }
     catch (Poco::Exception& exc) {
         std::cerr << "Exception: " << exc.displayText() << std::endl;
     }
+
+    std::cout << "Client socket close" << std::endl; 
+    clientSocket.close();
 }
 
-void smplServer::newAddress(std::string& _adr, std::string _port)
+void smplServer::newAddress(Poco::UInt16 _port)
+{
+    try 
+    {
+        socketAddress = Poco::Net::SocketAddress(_port);   
+        std::cout << "Create server socket adress: localhost:" <<  _port << std::endl;
+    }
+    catch (Poco::Exception& e) 
+    {
+        std::cerr << "The address is incorrect: " << e.displayText() << std::endl;
+    }
+}
+
+void smplServer::newAddress(std::string& _adr, std::string& _port)
 {
     try 
     {
@@ -78,7 +101,7 @@ void smplServer::open()
 {    
     try 
     {
-        server.bind(socketAddress); // Connect to a new port
+        server.bind(28888); // Connect to a new port
         server.listen();            // Start to listen a new port
         std::cout << "Server opened" << std::endl;
     }

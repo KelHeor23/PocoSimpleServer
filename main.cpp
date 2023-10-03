@@ -36,7 +36,7 @@ int main(int argc, char** argv)
         port = argv[1];
     }
 
-    smplServer server("localhost", port);
+    smplServer server(port);
 
     server.open();
     server.run();

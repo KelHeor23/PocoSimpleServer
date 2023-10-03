@@ -20,10 +20,14 @@ private:
     bool running = true;
 
 public:
+    smplServer(std::string &);
     smplServer(std::string, std::string);
+
     ~smplServer();
 
-    void newAddress(std::string&, std::string);    // Set new socket adress
+    void newAddress(Poco::UInt16);                 // Set new socket adress
+    void newAddress(std::string&, std::string&);    // Set new socket adress
+    
 
     void listenClient(Poco::Net::StreamSocket);  // Infinite loop waiting for a message from the client
 
