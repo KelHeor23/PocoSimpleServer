@@ -1,12 +1,11 @@
 NAME = server
-HEADER =
 SRCS = 	main.cpp server.cpp
 OBJECTS = $(SRCS:.cpp=.o)
 LIBS += -lPocoNet -lPocoFoundation
 FLAGS=	-Wall -Wextra -Werror -c
 CC = g++
 
-all: $(NAME)
+all: clean $(NAME)
 
 $(NAME): main.o server.o
 	@$(CC) $(OBJECTS) $(LIBS) -o $(NAME)	
