@@ -15,18 +15,28 @@ bool isAllDigits(char *c) {
 
 int main(int argc, char** argv)
 {
-    if (argc != 2)
+    std::string port;
+
+    if (argc > 2)
     {
         std::cout << "Please enter the port as the first argument" << std::endl;
         return 0;
     }
-    if (!isAllDigits(argv[1]))
+    else if (argc == 1)
+    {
+        port = "28888";
+    }
+    else if (!isAllDigits(argv[1]))
     {
         std::cout << "Invalid port" << std::endl;
         return 0;
     }
+    else
+    {
+        port = argv[1];
+    }
 
-    smplServer server("localhost", argv[1]);
+    smplServer server("localhost", port);
 
     server.open();
     server.run();
