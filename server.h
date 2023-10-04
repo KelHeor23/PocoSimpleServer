@@ -14,6 +14,8 @@ class iServer
 class smplServer : public iServer
 {
 private:
+    const int MAX_MSG_SIZE = 256;
+
     Poco::Net::ServerSocket  server;        
     Poco::Net::SocketAddress socketAddress;
 

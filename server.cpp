@@ -44,17 +44,30 @@ void smplServer::listenClient(Poco::Net::StreamSocket clientSocket)
 
             // Call poll() and wait 100 sec for it to complete.
             if (clientSocket.poll(Poco::Timespan(100000000), Poco::Net::Socket::SELECT_READ) <= 0)
+            {
+                std::cout << "There were no messages from the client" << std::endl;
                 break;
-            
+            }                
+
+            if (clientSocket.available() > MAX_MSG_SIZE)
+            {
+                std::cout << "Too long msg" << std::endl;
+                continue;
+            }
+
+            if (clientSocket.available() < (int)sizeof(size))
+                break;  
+
             // Receive size of msg
-            if (clientSocket.receiveBytes(&size, sizeof(size)) <= 0)
-                break;            
+            clientSocket.receiveBytes(&size, sizeof(size));
 
             char buffer[size+1];
 
+            if (clientSocket.available() < size)
+                break;  
+
             // Receive msg
-            if (clientSocket.receiveBytes(buffer, size) <= 0)
-                break;            
+            clientSocket.receiveBytes(buffer, size);           
 
             reverseCharArray(buffer, size);
 
