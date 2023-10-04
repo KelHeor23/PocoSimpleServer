@@ -132,5 +132,9 @@ void smplServer::close()
 
 void smplServer::reverseCharArray(char* array, int size)
 {
-    std::reverse(array, array + size);
+    for (int i = 0; i < size / 2; i++) {
+        char temp = array[i];
+        array[i] = array[size - i - 1];
+        array[size - i - 1] = temp;
+    }
 }
